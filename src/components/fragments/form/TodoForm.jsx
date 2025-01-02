@@ -2,36 +2,34 @@ import { useState } from 'react'
 import InputGroup from '../../elements/input'
 import Button from '../../elements/button'
 import SelectHour from '../../elements/select/SelectHour'
+import SelectCategory from '../../elements/select/SelectCategory'
 
 const TodoForm = () => {
 	const [title, setTitle] = useState('')
 	const [date, setDate] = useState('')
 	const [hour, setHour] = useState('')
 	const [note, setNote] = useState('')
+	const [category, setCategory] = useState('')
 
-	const handleSubmit = () => {
-		if (!title || !date || !hour) {
+	const handleSubmit = (e) => {
+		e.preventDefault()
+
+		if (!title || !date || !hour || !category) {
 			alert('Please fill in all fields')
 			return
 		}
 
 		const todos = JSON.parse(localStorage.getItem('todos')) || []
-
 		const lastId = todos.length > 0 ? todos[todos.length - 1].id : 0
 		const newId = lastId + 1
 
-		const newTodo = { id: newId, title, date, hour, note }
+		const newTodo = { id: newId, title, date, hour, note, category }
 
 		todos.push(newTodo)
-
 		localStorage.setItem('todos', JSON.stringify(todos))
 
 		alert('To-do added successfully!')
-
-		setTitle('')
-		setDate('')
-		setHour('')
-		setNote('')
+		location.reload()
 	}
 
 	return (
@@ -44,6 +42,10 @@ const TodoForm = () => {
 				type="text"
 				value={title}
 				onChange={(e) => setTitle(e.target.value)}
+			/>
+			<SelectCategory
+				selectedCategory={category}
+				onSelectCategory={setCategory}
 			/>
 			<InputGroup
 				className="mb-0"

@@ -6,15 +6,26 @@ import Button from '../../elements/button'
 const Sidebar = () => {
 	const navigate = useNavigate()
 	const [isAuthenticated, setIsAuthenticated] = useState(false)
+	const [categoryCounts, setCategoryCounts] = useState({})
 
 	useEffect(() => {
 		const isLoggedIn = localStorage.getItem('isAuthenticated')
 		if (isLoggedIn === 'true') {
 			setIsAuthenticated(true)
+			calculateCategoryCounts()
 		} else {
 			navigate('/login')
 		}
 	}, [navigate])
+
+	const calculateCategoryCounts = () => {
+		const todos = JSON.parse(localStorage.getItem('todos')) || []
+		const counts = todos.reduce((acc, todo) => {
+			acc[todo.category] = (acc[todo.category] || 0) + 1
+			return acc
+		}, {})
+		setCategoryCounts(counts)
+	}
 
 	const handleLogout = () => {
 		const isConfirmed = window.confirm('You sure?')
@@ -52,16 +63,16 @@ const Sidebar = () => {
 			<div className="mb-5">
 				<h2 className="font-bold text-2xl mb-3">Taskify</h2>
 				<ul className="mb-10">
-					{lists.map((list, index) => {
+					{lists.map((list) => {
 						return (
 							<li
-								key={index}
+								key={list.id}
 								className="flex justify-between items-center py-2 text-sm"
 							>
 								<span>{list.icon}</span>
 								<span className="w-full font-semibold ms-3">{list.name}</span>
 								<span className="bg-gray-200 rounded-full py-1 px-2 text-xs">
-									8
+									{categoryCounts[list.name] || 0}
 								</span>
 							</li>
 						)
@@ -70,10 +81,14 @@ const Sidebar = () => {
 				<Button className="w-full bg-blue-600">+ Create New List</Button>
 			</div>
 			<Button
-				className="w-full bg-transparent text-left text-[#000000] px-0"
+				className="w-full bg-transparent text-left text-[black] px-0"
 				onClick={handleLogout}
 			>
-				<img src="/assets/logout.svg" className="w-6 inline-block" />
+				<img
+					src="/assets/logout.svg"
+					className="w-6 inline-block"
+					alt="logout"
+				/>
 				Logout
 			</Button>
 		</aside>

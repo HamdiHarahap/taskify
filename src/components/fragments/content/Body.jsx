@@ -1,11 +1,6 @@
 import { useEffect, useState } from 'react'
 import Button from '../../elements/button'
 
-const handleFinishedTodo = () => {
-	const todos = JSON.parse(localStorage.getItem('todos'))
-	console.log(todos)
-}
-
 const Body = () => {
 	const [todos, setTodos] = useState([])
 	const [selectedTodoIndex, setSelectedTodoIndex] = useState(null)
@@ -14,6 +9,14 @@ const Body = () => {
 		const storedTodos = JSON.parse(localStorage.getItem('todos')) || []
 		setTodos(storedTodos)
 	}, [])
+
+	const handleFinishedTodo = (id) => {
+		const updatedTodos = todos.filter((todo) => todo.id !== id)
+		localStorage.setItem('todos', JSON.stringify(updatedTodos))
+		setTodos(updatedTodos)
+		setSelectedTodoIndex(null)
+		alert('Todo has been completed')
+	}
 
 	const handleTodoClick = (index) => {
 		setSelectedTodoIndex(selectedTodoIndex === index ? null : index)
@@ -74,7 +77,14 @@ const Body = () => {
 						<p className="h-full">
 							{todos[selectedTodoIndex].note || 'No notes available.'}
 						</p>
-						<Button className="bg-green-600 py-1" onClick={handleFinishedTodo}>
+						<Button
+							className="bg-green-600 py-1"
+							onClick={() =>
+								confirm('completed?')
+									? handleFinishedTodo(todos[selectedTodoIndex].id)
+									: handleCloseNote({ target: { id: 'overlay' } })
+							}
+						>
 							Finished
 						</Button>
 					</div>
