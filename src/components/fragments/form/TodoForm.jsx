@@ -14,11 +14,20 @@ const TodoForm = () => {
 			alert('Please fill in all fields')
 			return
 		}
-		const newTodo = { title, date, hour, note }
+
 		const todos = JSON.parse(localStorage.getItem('todos')) || []
+
+		const lastId = todos.length > 0 ? todos[todos.length - 1].id : 0
+		const newId = lastId + 1
+
+		const newTodo = { id: newId, title, date, hour, note }
+
 		todos.push(newTodo)
+
 		localStorage.setItem('todos', JSON.stringify(todos))
+
 		alert('To-do added successfully!')
+
 		setTitle('')
 		setDate('')
 		setHour('')

@@ -1,4 +1,10 @@
 import { useEffect, useState } from 'react'
+import Button from '../../elements/button'
+
+const handleFinishedTodo = () => {
+	const todos = JSON.parse(localStorage.getItem('todos'))
+	console.log(todos)
+}
 
 const Body = () => {
 	const [todos, setTodos] = useState([])
@@ -18,6 +24,8 @@ const Body = () => {
 			setSelectedTodoIndex(null)
 		}
 	}
+
+	let number = 1
 
 	return (
 		<div className="relative">
@@ -41,7 +49,9 @@ const Body = () => {
 							onClick={() => handleTodoClick(index)}
 						>
 							<div className="flex items-center">
-								<div className="w-4 h-4 border-gray-400 border-2 rounded-md"></div>
+								<div className=" border-gray-400 border-2 rounded-md px-1">
+									{number++}
+								</div>
 								<h3 className="font-semibold ms-2">{todo.title}</h3>
 							</div>
 							<div>
@@ -59,9 +69,14 @@ const Body = () => {
 				)}
 
 				{selectedTodoIndex !== null && (
-					<div className="mt-4 px-3 py-2 rounded-lg ms-[20rem] bg-white fixed w-[65rem] left-0 h-[10rem] z-20">
+					<div className="mt-4 px-3 py-2 rounded-lg ms-[20rem] bg-white fixed w-[65rem] left-0 h-[10rem] z-20 flex flex-col justify-between">
 						<h3 className="font-semibold text-lg mb-2">Note</h3>
-						<p>{todos[selectedTodoIndex].note || 'No notes available.'}</p>
+						<p className="h-full">
+							{todos[selectedTodoIndex].note || 'No notes available.'}
+						</p>
+						<Button className="bg-green-600 py-1" onClick={handleFinishedTodo}>
+							Finished
+						</Button>
 					</div>
 				)}
 			</div>
